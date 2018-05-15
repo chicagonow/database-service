@@ -1,0 +1,24 @@
+{
+  "name": "database-service",
+  "version": "1.0.0",
+  "description": "Nick Allen Ruben Rodriguez Dan Pfeiffer Alex Baumann Omar Chughtai Ameet Sarkar",
+  "main": "index.js",
+  "dependencies": {
+    "dynamodb-doc": "^1.0.x",
+    "winston": "^3.0.0-rc5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node ./node_modules/mocha/bin/mocha ./test/ --recursive"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chicagonow/database-service.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chicagonow/database-service/issues"
+  },
+  "homepage": "https://github.com/chicagonow/database-service#readme"
+}

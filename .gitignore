@@ -1,0 +1,10 @@
+**/node_modules
+**/npm-debug.log
+**/target/
+**/.idea
+**/*.iml
+**/package-lock.json
+.serverless
+*.zip
+.DS_Store
+**/*.vs*

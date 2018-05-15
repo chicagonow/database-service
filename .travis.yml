@@ -1,0 +1,26 @@
+language: node_js
+node_js:
+  - "8.10"
+branches:
+  only:
+  - master
+  - stage
+  - stage-west
+
+cache:
+  directories:
+    - node_modules
+
+before_install:
+  - chmod +x deploy.sh
+  - npm install ask-cli
+
+script:
+  - ./deploy.sh
+  - sh -c "cd ./lambda/custom/ && npm install"
+  - sh -c "cd ./lambda/custom/ && npm test"
+after_success:
+  - ask deploy -p default -t lambda
+
+notifications:
+    slack: chicagonow:zHgjnp9n08qZrsNqcBq5JmLz
