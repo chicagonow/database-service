@@ -20,7 +20,7 @@ script:
   - sh -c "cd ./lambda/ && npm install"
   - sh -c "cd ./lambda/ && npm test"
 after_success:
-  - ask deploy -p default -t lambda
+  - ask deploy -p default -t lambda || exit 1
 
 notifications:
     slack: chicagonow:zHgjnp9n08qZrsNqcBq5JmLz
