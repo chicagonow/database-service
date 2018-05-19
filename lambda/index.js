@@ -2,6 +2,9 @@
 const doc = require('dynamodb-doc');
 const dynamo = new doc.DynamoDB();
 
+const UserHandler = require('./handlers/Users/UserHandler');
+const logger = require('./logging/Logger');
+
 
 /**
  * Demonstrates a simple HTTP endpoint using API Gateway. You have full
@@ -14,10 +17,10 @@ const dynamo = new doc.DynamoDB();
  * DynamoDB API as a JSON body.
  */
 exports.handler = (event, context, callback) => {
-    //console.log('Received event:', JSON.stringify(event, null, 2));
+    logger.info('Received event: ' + JSON.stringify(event));
 
     const done = (err, res) => callback(null, {
-        statusCode: err ? '400' : '200',
+        statusCode: err ? 400 : 200,
         body: err ? err.message : JSON.stringify(res),
         headers: {
             'Content-Type': 'application/json',
@@ -34,10 +37,47 @@ exports.handler = (event, context, callback) => {
         case 'POST':
             dynamo.putItem(JSON.parse(event.body), done);
             break;
-        case 'PUT':
-            dynamo.updateItem(JSON.parse(event.body), done);
+        case 'PUT':            
+            let parameters = event.parameters;
+            let tableName = parameters.TableName;
+
+            // Check for a valid table name
+            if (tableName) {
+                switch(tableName) {
+                    case "User":
+                        // Check for valid parameters
+                        if (parameters.UserID) {
+                            UserHandler.addUser(parameters.UserID, done); 
+                        } else {
+                            returnErrorResponse("No UserID provided", callback);
+                        }         
+                        break;
+                    default:
+                        returnErrorResponse("PUT action not supported for that table", callback);
+                }               
+            } else {
+                returnErrorResponse("Please provide a valid table name", callback);   
+            }
+            
             break;
         default:
-            done(new Error(`Unsupported method "${event.httpMethod}"`));
+            done(new Error("Unsupported method " + event.httpMethod));
     }
+};
+
+/**
+ * Returns an HTTP 400 response with the error message
+ * @param {*} errorMessage 
+ * @param {*} httpCallback 
+ */
+let returnErrorResponse = (errorMessage, httpCallback) => {
+    let httpResponse = {
+        statusCode: 400,
+        body: errorMessage,
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    };
+
+    httpCallback(null, httpResponse);
 };
