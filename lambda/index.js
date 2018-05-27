@@ -3,6 +3,7 @@ const doc = require('dynamodb-doc');
 const dynamo = new doc.DynamoDB();
 
 const UserHandler = require('./handlers/Users/UserHandler');
+const LocationHandler = require('./handlers/location/LocationHandler');
 const logger = require('./logging/Logger');
 
 
@@ -27,38 +28,43 @@ exports.handler = (event, context, callback) => {
         },
     });
 
+    let parameters = event.parameters || {};
+    let tableName = parameters.TableName || "";
+
     switch (event.httpMethod) {
         case 'DELETE':
             dynamo.deleteItem(JSON.parse(event.body), done);
             break;
         case 'GET':
-            dynamo.scan({ TableName: event.queryStringParameters.TableName }, done);
+            dynamo.scan({TableName: event.queryStringParameters.TableName}, done);
             break;
         case 'POST':
-            dynamo.putItem(JSON.parse(event.body), done);
+
+            switch (tableName) {
+                case "location":
+                    LocationHandler.insertLocationEntry(parameters.locationEntry, done);
+                    break;
+                default:
+                    returnErrorResponse("POST action not supported for table: " + tableName, callback);
+            }
             break;
-        case 'PUT':            
-            let parameters = event.parameters;
-            let tableName = parameters.TableName;
+
+        case 'PUT':
 
             // Check for a valid table name
-            if (tableName) {
-                switch(tableName) {
-                    case "User":
-                        // Check for valid parameters
-                        if (parameters.UserID) {
-                            UserHandler.addUser(parameters.UserID, done); 
-                        } else {
-                            returnErrorResponse("No UserID provided", callback);
-                        }         
-                        break;
-                    default:
-                        returnErrorResponse("PUT action not supported for that table", callback);
-                }               
-            } else {
-                returnErrorResponse("Please provide a valid table name", callback);   
+            switch (tableName) {
+                case "User":
+                    // Check for valid parameters
+                    if (parameters.UserID) {
+                        UserHandler.addUser(parameters.UserID, done);
+                    } else {
+                        returnErrorResponse("No UserID provided", callback);
+                    }
+                    break;
+                default:
+                    returnErrorResponse("PUT action not supported for table: " + tableName, callback);
             }
-            
+
             break;
         default:
             done(new Error("Unsupported method " + event.httpMethod));
