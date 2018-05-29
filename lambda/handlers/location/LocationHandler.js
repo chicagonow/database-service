@@ -1,5 +1,7 @@
 const doc = require('dynamodb-doc');
 const dynamo = new doc.DynamoDB();
+const uuid = require('uuid/v1');
+
 
 /**
  * Adds or updates to the User table
@@ -7,9 +9,15 @@ const dynamo = new doc.DynamoDB();
  * @param {function} onDatabaseActionDone 
  */
 exports.insertLocationEntry = (locationEntry, onDatabaseActionDone) => {
-    let putParameters = {};
-    putParameters.TableName = "location";
-    putParameters.Item = locationEntry;
+    let locationEntryParameters = {};
+    locationEntryParameters.TableName = "location";
+    locationEntryParameters.Item = {
+        "id": uuid(),
+        "requestId": locationEntry.requestId,
+        "deviceId": locationEntry.deviceId,
+        "latitude": locationEntry.latitude,
+        "longitude": locationEntry.longitude
+    };
 
-    dynamo.putItem(putParameters, onDatabaseActionDone)
+    dynamo.putItem(locationEntryParameters, onDatabaseActionDone)
 };
