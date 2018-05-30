@@ -4,6 +4,7 @@ const dynamo = new doc.DynamoDB();
 
 const UserHandler = require('./handlers/Users/UserHandler');
 const LocationHandler = require('./handlers/location/LocationHandler');
+const RequestHandler = require('./handlers/request/RequestHandler');
 const logger = require('./logging/Logger');
 
 
@@ -43,6 +44,9 @@ exports.handler = (event, context, callback) => {
             switch (tableName) {
                 case "location":
                     LocationHandler.insertLocationEntry(parameters.locationEntry, done);
+                    break;
+                case "request":                    
+                    RequestHandler.insertRequestEntry(parameters.requestEntry, done);
                     break;
                 default:
                     returnErrorResponse("POST action not supported for table: " + tableName, callback);
