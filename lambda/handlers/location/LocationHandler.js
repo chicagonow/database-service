@@ -1,6 +1,7 @@
 const doc = require('dynamodb-doc');
 const dynamo = new doc.DynamoDB();
 const uuid = require('uuid/v1');
+const logger = require('../../logging/Logger');
 
 
 /**
@@ -9,6 +10,8 @@ const uuid = require('uuid/v1');
  * @param {function} onDatabaseActionDone 
  */
 exports.insertLocationEntry = (locationEntry, onDatabaseActionDone) => {
+    logger.info("start location creations");
+
     let locationEntryParameters = {};
     locationEntryParameters.TableName = "location";
     locationEntryParameters.Item = {
@@ -19,5 +22,6 @@ exports.insertLocationEntry = (locationEntry, onDatabaseActionDone) => {
         "longitude": locationEntry.longitude
     };
 
+    logger.info("attempting to put location obj: " + JSON.stringify(locationEntryParameters));
     dynamo.putItem(locationEntryParameters, onDatabaseActionDone)
 };
