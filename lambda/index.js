@@ -34,10 +34,12 @@ exports.handler = (event, context, callback) => {
 
     switch (event.httpMethod) {
         case 'DELETE':
-            dynamo.deleteItem(JSON.parse(event.body), done);
+            // dynamo.deleteItem(JSON.parse(event.body), done);
             break;
         case 'GET':
-            dynamo.scan({TableName: event.queryStringParameters.TableName}, done);
+            dynamo.scan({
+                TableName: event.queryStringParameters.TableName
+            }, done);
             break;
         case 'POST':
 
