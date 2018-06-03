@@ -6,11 +6,12 @@
   "dependencies": {
     "dynamodb-doc": "^1.0.x",
     "uuid": "^3.2.x",
-    "winston": "^3.0.0-rc5"
+    "winston": "^3.0.0-rc6"
   },
   "devDependencies": {
     "chai": "^4.1.x",
-    "mocha": "^5.0.x"
+    "mocha": "^5.0.x",
+    "serverless": "^1.27.3"
   },
   "scripts": {
     "test": "node ./node_modules/mocha/bin/mocha ./test/ --recursive"

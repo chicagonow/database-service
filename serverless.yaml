@@ -4,7 +4,6 @@
 # http://serverless.com
 
 service: database-service
-
 provider:
   name: aws
   runtime: nodejs8.10
@@ -13,7 +12,7 @@ provider:
   timeout: 30
 
 functions:
-  # Get users ----------------------------------------------------------------
+  # Users ----------------------------------------------------------------
   getUsers:
     handler: index.getUsers
     events:
@@ -22,4 +21,13 @@ functions:
           method: get
           cors: 
             origins:               
-              - '*'            
+              - '*'  
+  updateUser:
+    handler: index.updateUser
+    events:
+      - http: 
+          path: users
+          method: post
+          cors:
+            origins:
+              - '*'          
