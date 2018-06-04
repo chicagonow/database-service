@@ -30,4 +30,42 @@ functions:
           method: post
           cors:
             origins:
-              - '*'          
+              - '*'    
+  # Locations ------------------------------------------------------------
+  getLocations:
+    handler: index.getLocations
+    events:
+      - http:
+          path: locations
+          method: get
+          cors:
+            origins:
+              - '*'
+  updateLocation:
+    handler: index.updateLocation
+    events:
+      - http:
+          path: locations
+          method: post
+          cors:
+            origins:
+              - '*'      
+  # Requests -------------------------------------------------------------
+  getRequests:
+    handler: index.getRequests
+    events:
+      - http:
+          path: requests
+          method: get
+          cors:
+            origins:
+              - '*'
+  updateRequest:
+    handler: index.updateRequest
+    events:
+      - http:
+          path: requests
+          method: post
+          cors:
+              origins:
+                  - '*'

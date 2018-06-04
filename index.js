@@ -2,6 +2,11 @@ const doc = require('dynamodb-doc');
 const dynamo = new doc.DynamoDB();
 const logger = require('./logging/Logger');
 
+// Handlers
+const UserHandler = require('./handlers/user/UserHandler');
+const LocationHandler = require('./handlers/location/LocationHandler');
+const RequestHandler = require('./handlers/request/RequestHandler');
+
 /**
  * Function that returns the HTTP response
  * @param {object} err 
@@ -20,26 +25,64 @@ const done = (err, res, callback) => {
     });
 };
 
+/**
+ * Returns the proper body as an object
+ * @param {object | string} event 
+ */
+const getBody = (event) => {
+    return typeof event.body === "string" ? JSON.parse(event.body) : event.body;
+};
+
 module.exports = {
 
     /**
-     * Get all users
+     * GET /users
      */
     getUsers: (event, context, callback) => {
         logger.info('Received event for getUsers: ' + JSON.stringify(event));
-        dynamo.scan({TableName: "User"}, (err, res) => done(err, res, callback));
+        UserHandler.getUsers((err, res) => done(err, res, callback));        
     },
 
     /**
-     * Add/Update user
+     * POST /users
      */
     updateUser: (event, context, callback) => {
-        logger.info('Received event for updateUser: ');
-        logger.info(event);
-        let body = typeof event.body === "string" ? JSON.parse(event.body) : event.body;
-        let params = {};
-        params.TableName = "User";
-        params.Key = {id: body.userID};        
-        dynamo.updateItem(params, (err, res) => done(err, res, callback));
+        logger.info('Received event for updateUser: ' + JSON.stringify(event));
+        let body = getBody(event);
+        UserHandler.updateUser(body.userID, (err, res) => done(err, res, callback));
+    },
+
+    /**
+     * GET /locations
+     */
+    getLocations: (event, context, callback) => {
+        logger.info('Received event for getLocations: ' + JSON.stringify(event));
+        LocationHandler.getLocations((err, res) => done(err, res, callback));
+    },
+
+    /**
+     * POST /locations
+     */
+    updateLocation: (event, context, callback) => {
+        logger.info('Received event for updateLocation: ' + JSON.stringify(event));
+        let body = getBody(event);
+        LocationHandler.insertLocationEntry(body.locationEntry, (err, res) => done(err, res, callback));
+    },
+
+    /**
+     * GET /requests
+     */
+    getRequests: (event, context, callback) => {
+        logger.info('Received event for getRequests: ' + JSON.stringify(event));
+        RequestHandler.getRequests((err, res) => done(err, res, callback));
+    },
+
+    /**
+     * POST /requests
+     */
+    updateRequest: (event, context, callback) => {
+        logger.info('Received event for updateRequests: ' + JSON.stringify(event));
+        let body = getBody(event);
+        RequestHandler.insertRequestEntry(body.requestEntry, (err, res) => done(err, res, callback));
     }
 }

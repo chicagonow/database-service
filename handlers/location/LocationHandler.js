@@ -3,6 +3,13 @@ const dynamo = new doc.DynamoDB();
 const uuid = require('uuid/v1');
 const logger = require('../../logging/Logger');
 
+/**
+ * Returns all locations
+ * @param {function} onDatabaseActionDone 
+ */
+exports.getLocations = (onDatabaseActionDone) => {
+    dynamo.scan({TableName: "location"}, onDatabaseActionDone);
+};
 
 /**
  * Adds or updates to the User table
