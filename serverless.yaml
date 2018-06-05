@@ -1,0 +1,71 @@
+# Serverless definition file
+# --------------------------
+# Defines Lambda functions to be deployed to AWS using the Serverless Framework.
+# http://serverless.com
+
+service: database-service
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: us-east-1
+  memorySize: 128
+  timeout: 30
+
+functions:
+  # Users ----------------------------------------------------------------
+  getUsers:
+    handler: index.getUsers
+    events:
+      - http:
+          path: users
+          method: get
+          cors: 
+            origins:               
+              - '*'  
+  updateUser:
+    handler: index.updateUser
+    events:
+      - http: 
+          path: users
+          method: post
+          cors:
+            origins:
+              - '*'    
+  # Locations ------------------------------------------------------------
+  getLocations:
+    handler: index.getLocations
+    events:
+      - http:
+          path: locations
+          method: get
+          cors:
+            origins:
+              - '*'
+  updateLocation:
+    handler: index.updateLocation
+    events:
+      - http:
+          path: locations
+          method: post
+          cors:
+            origins:
+              - '*'      
+  # Requests -------------------------------------------------------------
+  getRequests:
+    handler: index.getRequests
+    events:
+      - http:
+          path: requests
+          method: get
+          cors:
+            origins:
+              - '*'
+  updateRequest:
+    handler: index.updateRequest
+    events:
+      - http:
+          path: requests
+          method: post
+          cors:
+              origins:
+                  - '*'
